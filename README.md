@@ -62,4 +62,23 @@ Viewing last 7 actual days
 
 **Screenshots**
 
-Screenshots are in the static folder, kindly check 
+**Predictions & Actuals Display**
+![Screenshot 2025-03-13 200442](https://github.com/user-attachments/assets/c94eac3c-dd0e-456f-930e-4c5d0fdb3136)
+
+Lists the next 7 days of predicted prices using linear regression and previous 7 days of real market data.
+
+
+The rest of the Screenshots are in the static folder, kindly check
+
+🙋‍♂️ **Author**
+Sumit Pandey
+
+📍 Ottawa, Canada
+
+📧 Email: pand0106@algonquinlive.com
+
+🔗 https://www.linkedin.com/in/skp0209/
+
+ **License**
+This project is licensed for personal, academic, and educational use. You're free to fork, modify, and distribute it with credit.
+
