@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Analysis Dashboard</title>
+  <meta charset="UTF-8">
+  <!-- Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Real-Time Stock Analysis Dashboard</h1>
+
+  <!-- Buttons -->
+  <div>
+    <button onclick="updateData()">Update Data</button>
+    <button onclick="fetchPredictions()">Get Predictions</button>
+    <button onclick="fetchPrevious7Days()">Get Previous 7 Days</button>
+  </div>
+
+  <!-- Charts -->
+  <div>
+    <canvas id="closingChart" width="800" height="400"></canvas>
+  </div>
+  <div>
+    <canvas id="movingAverageChart" width="800" height="400"></canvas>
+  </div>
+
+  <!-- Results/Display -->
+  <div id="predictions"></div>
+  <div id="previous-data"></div>
+
+  <script>
+    let closingChart, movingAverageChart;
+
+    // On page load, fetch historical data for the charts
+    window.onload = function() {
+      fetchHistoricalData();
+    };
+
+    // 1) Fetch & Render Historical Data
+    function fetchHistoricalData() {
+      fetch('/data')
+        .then(res => res.json())
+        .then(data => {
+          renderCharts(data);
+        })
+        .catch(err => console.error("Error fetching historical data:", err));
+    }
+
+    function renderCharts(data) {
+      const dates = data.map(item => item.Date);
+      const closes = data.map(item => parseFloat(item.Close));
+      const ma5 = data.map(item => parseFloat(item['5-Day MA']));
+
+      // Destroy existing charts if any
+      if (closingChart) closingChart.destroy();
+      if (movingAverageChart) movingAverageChart.destroy();
+
+      // Closing Prices Chart
+      const ctx1 = document.getElementById('closingChart').getContext('2d');
+      closingChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Closing Prices',
+            data: closes,
+            borderColor: 'blue',
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { title: { display: true, text: 'Price' } }
+          }
+        }
+      });
+
+      // 5-Day Moving Average Chart
+      const ctx2 = document.getElementById('movingAverageChart').getContext('2d');
+      movingAverageChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: '5-Day MA',
+            data: ma5,
+            borderColor: 'orange',
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Date' } },
+            y: { title: { display: true, text: 'Price' } }
+          }
+        }
+      });
+    }
+
+    // 2) Fetch Next 7 Days Predictions
+    function fetchPredictions() {
+      fetch('/predict')
+        .then(res => res.json())
+        .then(data => {
+          let html = "<h2>Next 7 Days Predictions</h2><ul>";
+          data.forEach(item => {
+            html += `<li>${item.Date}: $${item['Predicted Price'].toFixed(2)}</li>`;
+          });
+          html += "</ul>";
+          document.getElementById('predictions').innerHTML = html;
+        })
+        .catch(err => console.error("Error fetching predictions:", err));
+    }
+
+    // 3) Fetch Last 7 Days of Actual Data
+    function fetchPrevious7Days() {
+      fetch('/previous-7-days')
+        .then(res => res.json())
+        .then(data => {
+          let html = "<h2>Previous 7 Days (Actual Data)</h2><ul>";
+          data.forEach(item => {
+            html += `<li>${item.Date}: $${parseFloat(item.Close).toFixed(2)}</li>`;
+          });
+          html += "</ul>";
+          document.getElementById('previous-data').innerHTML = html;
+        })
+        .catch(err => console.error("Error fetching previous data:", err));
+    }
+
+    // 4) Update Data (Fetch from Alpha Vantage & retrain model)
+    function updateData() {
+      fetch('/fetch-data')
+        .then(res => res.json())
+        .then(result => {
+          console.log("Update Data result:", result);
+          // Re-fetch historical data to refresh the charts
+          fetchHistoricalData();
+        })
+        .catch(err => console.error("Error updating data:", err));
+    }
+  </script>
+</body>
+</html>
