@@ -67,6 +67,26 @@ Viewing last 7 actual days
 
 Lists the next 7 days of predicted prices using linear regression and previous 7 days of real market data.
 
+**Volatility Over Time**
+
+![volatility](https://github.com/user-attachments/assets/b3abaf51-667e-417a-915b-ba22db065be4)
+
+Visualizes market volatility calculated as the rolling standard deviation over a 5-day window.
+
+
+**Closing Prices Over Time**
+![closing_prices](https://github.com/user-attachments/assets/737327f2-236e-4c08-bb1d-84984d824d3a)
+
+
+Shows daily closing stock prices over time with sharp movements captured clearly.
+
+**Moving Average with Closing Prices**
+
+![moving_average](https://github.com/user-attachments/assets/0a104638-5088-40b3-8708-21bf97cb369f)
+
+
+Displays both the actual closing prices and a smoothed 5-day moving average line.
+
 
 The rest of the Screenshots are in the static folder, kindly check
 
